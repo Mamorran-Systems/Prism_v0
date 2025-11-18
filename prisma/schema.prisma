@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  runs      Run[]
+}
+
+model Run {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  name      String
+  createdAt DateTime @default(now())
+  steps     Step[]
+  revisions Revision[]
+}
+
+enum TrackType {
+  AI
+  MANUAL
+  SYSTEM
+}
+
+model Step {
+  id         String    @id @default(cuid())
+  run        Run       @relation(fields: [runId], references: [id])
+  runId      String
+  index      Int
+  track      TrackType
+  tool       String
+  prompt     String
+  response   String
+  summary    String
+  durationMs Int
+  createdAt  DateTime  @default(now())
+}
+
+model Revision {
+  id              String    @id @default(cuid())
+  run             Run       @relation(fields: [runId], references: [id])
+  runId           String
+  label           String
+  stepIndex       Int
+  parentRevision  Revision? @relation("RevisionParent", fields: [parentRevisionId], references: [id])
+  parentRevisionId String?
+  summary         String
+  createdAt       DateTime  @default(now())
+
+  children Revision[] @relation("RevisionParent")
+}
+
+// Reserved for later – no UI usage in v0
+model PromptTemplate {
+  id              String   @id @default(cuid())
+  title           String
+  body            String
+  defaultTool     String
+  phase           String
+  usageCount      Int      @default(0)
+  efficiencyScore Float    @default(0)
+  createdAt       DateTime @default(now())
+}
+
