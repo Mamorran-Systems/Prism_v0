@@ -58,4 +58,3 @@ A single-panel AI console with version history for tracking AI work step-by-step
 - `npm run prisma:generate` - Generate Prisma client
 - `npm run prisma:migrate` - Run database migrations
 - `npm run prisma:studio` - Open Prisma Studio
-
