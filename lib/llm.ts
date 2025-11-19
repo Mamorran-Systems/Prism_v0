@@ -1,8 +1,12 @@
 import OpenAI from 'openai';
 import { MODELS } from './config';
 
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OPENAI_API_KEY is missing');
+}
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function callLLM(model: string, prompt: string): Promise<{ text: string; tokens: number; durationMs: number }> {
